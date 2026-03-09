@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GMC PRO — Powered by Imad Bergaouy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
+:root {
+  --bg:#040507;--surface:#0A0B0F;--card:#0F1117;--card2:#141720;
+  --border:rgba(255,255,255,0.06);--border-hi:rgba(255,255,255,0.12);
+  --text:#E8EAF0;--dim:#5A6272;--dim2:#2D3242;
+  --red:#FF3B3B;--red-d:rgba(255,59,59,0.1);--red-b:rgba(255,59,59,0.25);
+  --amber:#F59E0B;--amber-d:rgba(245,158,11,0.1);--amber-b:rgba(245,158,11,0.25);
+  --green:#10B981;--green-d:rgba(16,185,129,0.1);--green-b:rgba(16,185,129,0.25);
+  --blue:#3B82F6;--blue-d:rgba(59,130,246,0.1);--blue-b:rgba(59,130,246,0.25);
+  --gold:#F59E0B;--mono:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:2px;}
+
+.header{background:rgba(10,11,15,0.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;gap:14px;height:58px;position:sticky;top:0;z-index:200;}
+.logo-icon{width:30px;height:30px;background:var(--red);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;box-shadow:0 0 20px rgba(255,59,59,0.5);flex-shrink:0;}
+.logo-text{font-family:'Syne',sans-serif;font-weight:800;font-size:0.88rem;letter-spacing:0.5px;}
+.logo-sub{font-size:0.6rem;color:var(--dim);margin-top:1px;}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.badge{font-size:0.6rem;font-family:var(--mono);font-weight:700;padding:3px 10px;border-radius:8px;}
+.badge-gold{background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(245,158,11,0.05));border:1px solid rgba(245,158,11,0.3);color:var(--gold);}
+.badge-red{background:var(--red-d);border:1px solid var(--red-b);color:var(--red);}
+.badge-green{background:var(--green-d);border:1px solid var(--green-b);color:var(--green);display:flex;align-items:center;gap:5px;}
+.live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+.layout{display:grid;grid-template-columns:310px 1fr;min-height:calc(100vh - 58px);}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:18px 16px;overflow-y:auto;position:sticky;top:58px;height:calc(100vh - 58px);}
+.main{padding:24px 28px;overflow-y:auto;}
+
+.s-title{font-family:'Syne',sans-serif;font-size:0.67rem;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;}
+.s-label{font-size:0.63rem;font-weight:600;font-family:var(--mono);color:var(--dim);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px;margin-top:12px;display:block;}
+
+.api-box{background:linear-gradient(135deg,rgba(16,185,129,0.08),rgba(16,185,129,0.03));border:1px solid var(--green-b);border-radius:10px;padding:12px;margin-bottom:14px;}
+.api-box-title{font-family:'Syne',sans-serif;font-size:0.68rem;font-weight:700;color:var(--green);margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.api-wrap{position:relative;}
+.api-wrap input{padding-right:36px;}
+.api-eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--dim);cursor:pointer;font-size:0.8rem;padding:0;}
+.api-note{font-size:0.6rem;color:var(--dim);margin-top:6px;line-height:1.5;}
+.api-note a{color:var(--green);text-decoration:none;}
+.api-st{font-size:0.63rem;font-family:var(--mono);margin-top:5px;padding:3px 8px;border-radius:5px;display:none;}
+.api-st.ok{background:var(--green-d);color:var(--green);border:1px solid var(--green-b);display:block;}
+.api-st.err{background:var(--red-d);color:var(--red);border:1px solid var(--red-b);display:block;}
+
+input[type=url],input[type=text],input[type=password],select{width:100%;background:var(--card);border:1px solid var(--border-hi);border-radius:8px;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:0.8rem;color:var(--text);outline:none;appearance:none;transition:border-color 0.2s;}
+input:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(16,185,129,0.1);}
+input::placeholder{color:var(--dim2);}
+select option{background:#0F1117;}
+
+.pills{display:flex;flex-direction:column;gap:4px;}
+.pill{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:6px 9px;font-size:0.68rem;color:var(--dim);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:6px;user-select:none;}
+.pill:hover{border-color:var(--border-hi);color:var(--text);}
+.pill.on{border-color:var(--amber-b);background:var(--amber-d);color:var(--amber);}
+.pill-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;opacity:0.7;}
+
+.scan-btn{width:100%;background:linear-gradient(135deg,#FF3B3B,#FF6B35);color:white;border:none;border-radius:10px;padding:13px;font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:800;cursor:pointer;margin-top:16px;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 24px rgba(255,59,59,0.4);letter-spacing:0.3px;}
+.scan-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 32px rgba(255,59,59,0.5);}
+.scan-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+
+.prog-wrap{margin-top:14px;display:none;}
+.prog-wrap.on{display:block;}
+.prog-lbl{font-size:0.67rem;color:var(--amber);margin-bottom:5px;font-family:var(--mono);}
+.prog-bar{width:100%;height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--amber),var(--green));border-radius:2px;transition:width 0.6s ease;width:0%;}
+.prog-steps{margin-top:8px;}
+.ps{padding:2px 0;font-size:0.63rem;font-family:var(--mono);color:var(--dim);display:flex;align-items:center;gap:5px;}
+.ps.done{color:var(--green);}
+.ps.active{color:var(--amber);}
+.ps.err{color:var(--red);}
+
+/* PLACEHOLDER */
+.placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;text-align:center;}
+.ph-icon{font-size:4rem;margin-bottom:20px;filter:drop-shadow(0 0 40px rgba(255,59,59,0.4));}
+.ph-title{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;margin-bottom:10px;background:linear-gradient(135deg,var(--text),var(--dim));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.ph-sub{font-size:0.83rem;color:var(--dim);line-height:1.7;max-width:440px;margin-bottom:24px;}
+.ph-feats{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}
+.ph-feat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:0.7rem;color:var(--dim);display:flex;align-items:center;gap:6px;}
+
+/* ERROR */
+.err-box{background:var(--red-d);border:1px solid var(--red-b);border-radius:10px;padding:16px;color:var(--red);font-size:0.8rem;margin-bottom:20px;display:none;line-height:1.6;}
+.err-box.on{display:block;}
+
+/* RESULTS */
+.results{display:none;}
+.results.on{display:block;}
+
+.verdict{border-radius:14px;padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;gap:20px;position:relative;overflow:hidden;}
+.verdict.red{background:rgba(255,59,59,0.07);border:1px solid var(--red-b);}
+.verdict.orange{background:rgba(245,158,11,0.07);border:1px solid var(--amber-b);}
+.verdict.green{background:rgba(16,185,129,0.07);border:1px solid var(--green-b);}
+.verdict.yellow{background:rgba(245,158,11,0.05);border:1px solid rgba(245,158,11,0.2);}
+.v-score{font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;line-height:1;flex-shrink:0;width:72px;text-align:center;}
+.verdict.red .v-score{color:var(--red);}
+.verdict.orange .v-score{color:var(--amber);}
+.verdict.green .v-score{color:var(--green);}
+.verdict.yellow .v-score{color:var(--amber);}
+.v-label{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:4px;}
+.v-msg{font-size:0.78rem;color:var(--dim);line-height:1.5;}
+.v-meta{margin-left:auto;text-align:right;flex-shrink:0;}
+.v-mi{font-size:0.67rem;color:var(--dim);margin-bottom:3px;display:flex;align-items:center;gap:5px;justify-content:flex-end;}
+.v-mn{font-family:'Syne',sans-serif;font-weight:800;font-size:0.9rem;}
+.v-mn.r{color:var(--red);}.v-mn.a{color:var(--amber);}.v-mn.g{color:var(--green);}.v-mn.b{color:var(--blue);}
+
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:20px;}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center;}
+.stat-n{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;line-height:1;}
+.stat-n.r{color:var(--red);}.stat-n.a{color:var(--amber);}.stat-n.b{color:var(--blue);}.stat-n.g{color:var(--green);}
+.stat-l{font-size:0.59rem;color:var(--dim);margin-top:3px;text-transform:uppercase;letter-spacing:0.5px;}
+
+.sec{font-family:'Syne',sans-serif;font-size:0.73rem;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;margin-top:24px;display:flex;align-items:center;gap:10px;}
+.sec::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.exp-row{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+.exp-btn{background:rgba(255,255,255,0.04);border:1px solid var(--border-hi);color:var(--dim);border-radius:7px;padding:7px 14px;font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:500;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;}
+.exp-btn:hover{background:rgba(255,255,255,0.07);color:var(--text);}
+
+/* SCREENSHOTS */
+.ss-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:4px;}
+.ss-card{background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;transition:all 0.2s;}
+.ss-card:hover{border-color:var(--border-hi);transform:translateY(-2px);}
+.ss-img{width:100%;aspect-ratio:16/10;background:var(--card2);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:var(--dim);}
+.ss-img img{width:100%;height:100%;object-fit:cover;}
+.ss-lbl{padding:6px 8px;font-size:0.63rem;color:var(--dim);font-family:var(--mono);border-top:1px solid var(--border);}
+
+/* PAGES GRID */
+.pg-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:4px;}
+.pg{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:7px 9px;font-size:0.64rem;display:flex;align-items:center;gap:5px;}
+.pg.ok{border-color:rgba(16,185,129,0.2);}
+.pg.fail{border-color:rgba(255,59,59,0.15);}
+.pg-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.pg.ok .pg-dot{background:var(--green);}
+.pg.fail .pg-dot{background:var(--red);}
+.pg-name{color:var(--dim);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.pg-code{font-family:var(--mono);font-size:0.57rem;}
+.pg.ok .pg-code{color:var(--green);}
+.pg.fail .pg-code{color:var(--red);}
+
+/* TOP FIXES */
+.tf{background:var(--card);border:1px solid var(--border);border-left:3px solid;border-radius:10px;padding:13px 15px;margin-bottom:7px;display:flex;gap:12px;align-items:flex-start;}
+.tf.CRITICAL{border-left-color:var(--red);}
+.tf.HIGH{border-left-color:var(--amber);}
+.tf-num{width:24px;height:24px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:0.73rem;flex-shrink:0;}
+.CRITICAL .tf-num{background:var(--red-d);color:var(--red);border:1px solid var(--red-b);}
+.HIGH .tf-num{background:var(--amber-d);color:var(--amber);border:1px solid var(--amber-b);}
+.tf-title{font-size:0.8rem;font-weight:600;color:var(--text);margin-bottom:3px;}
+.tf-fix{font-size:0.7rem;color:var(--dim);line-height:1.5;}
+
+/* SEV */
+.sev{font-size:0.57rem;font-family:var(--mono);font-weight:700;padding:2px 6px;border-radius:4px;text-transform:uppercase;margin-left:5px;}
+.sev-CRITICAL{background:var(--red-d);color:var(--red);border:1px solid var(--red-b);}
+.sev-HIGH{background:var(--amber-d);color:var(--amber);border:1px solid var(--amber-b);}
+.sev-MEDIUM{background:var(--blue-d);color:var(--blue);border:1px solid var(--blue-b);}
+.sev-LOW{background:rgba(90,98,114,0.12);color:var(--dim);border:1px solid rgba(90,98,114,0.2);}
+.sev-OK{background:var(--green-d);color:var(--green);border:1px solid var(--green-b);}
+
+/* FILTERS */
+.ftabs{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap;}
+.ftab{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-size:0.68rem;font-weight:600;color:var(--dim);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;}
+.ftab:hover{border-color:var(--border-hi);color:var(--text);}
+.ftab.on{border-color:var(--red-b);background:var(--red-d);color:var(--red);}
+.ftab .cnt{background:rgba(255,255,255,0.07);border-radius:3px;padding:1px 5px;font-size:0.58rem;}
+
+/* FINDINGS */
+.finding{background:var(--card);border:1px solid var(--border);border-left:3px solid;border-radius:10px;margin-bottom:7px;overflow:hidden;}
+.finding.CRITICAL{border-left-color:var(--red);}
+.finding.HIGH{border-left-color:var(--amber);}
+.finding.MEDIUM{border-left-color:var(--blue);}
+.finding.LOW{border-left-color:var(--dim2);}
+.finding.OK{border-left-color:var(--green);opacity:0.55;}
+.fh{padding:12px 14px;cursor:pointer;display:flex;align-items:flex-start;gap:10px;user-select:none;}
+.fh:hover{background:rgba(255,255,255,0.012);}
+.fh-ico{font-size:0.9rem;flex-shrink:0;margin-top:1px;}
+.fh-b{flex:1;}
+.fh-t{font-size:0.78rem;font-weight:600;color:var(--text);display:flex;align-items:center;flex-wrap:wrap;gap:3px;}
+.fh-m{font-size:0.65rem;color:var(--dim);margin-top:2px;font-family:var(--mono);}
+.fh-arr{margin-left:auto;font-size:0.63rem;color:var(--dim);transition:transform 0.2s;flex-shrink:0;}
+.finding.open .fh-arr{transform:rotate(180deg);}
+.fb{display:none;padding:0 14px 12px;border-top:1px solid var(--border);}
+.finding.open .fb{display:block;}
+.fb-r{display:grid;grid-template-columns:78px 1fr;gap:6px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.025);font-size:0.7rem;}
+.fb-r:last-child{border-bottom:none;}
+.fb-k{color:var(--dim);font-family:var(--mono);font-size:0.6rem;text-transform:uppercase;letter-spacing:0.5px;}
+.fb-v{color:var(--text);line-height:1.5;}
+.fb-v.fix{color:#86EFAC;font-weight:500;}
+.fb-v.found{color:#FCA5A5;}
+
+/* MODAL */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;display:none;align-items:center;justify-content:center;}
+.modal.on{display:flex;}
+.modal img{max-width:90vw;max-height:85vh;border-radius:10px;border:1px solid var(--border-hi);}
+.modal-x{position:fixed;top:20px;right:20px;background:var(--card);border:1px solid var(--border-hi);color:var(--text);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;border:none;}
+
+.footer{text-align:center;padding:20px;font-size:0.6rem;color:var(--dim2);border-top:1px solid var(--border);margin-top:32px;}
+.footer span{color:var(--gold);font-weight:700;}
+
+@media(max-width:768px){
+  .layout{grid-template-columns:1fr;}
+  .sidebar{position:static;height:auto;}
+  .stats{grid-template-columns:repeat(3,1fr);}
+  .pg-grid{grid-template-columns:repeat(2,1fr);}
+  .ss-grid{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo-icon">⚡</div>
+  <div>
+    <div class="logo-text">GMC PRO DIAGNOSTIC</div>
+    <div class="logo-sub">Powered by Imad Bergaouy</div>
+  </div>
+  <div class="header-right">
+    <div class="badge badge-green"><div class="live-dot"></div>GEMINI AI</div>
+    <div class="badge badge-gold">✦ Imad Bergaouy</div>
+    <div class="badge badge-red">v3.0 · 2025/2026</div>
+  </div>
+</header>
+
+<div class="modal" id="modal" onclick="closeModal()">
+  <button class="modal-x">✕</button>
+  <img id="modalImg" src="" alt="">
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+
+    <div class="api-box">
+      <div class="api-box-title">🔑 Gemini API Key (Free)</div>
+      <span class="s-label">Your API Key</span>
+      <div class="api-wrap">
+        <input type="password" id="apiKey" placeholder="AIzaSy..." oninput="onKey()">
+        <button class="api-eye" onclick="toggleEye()">👁</button>
+      </div>
+      <div class="api-note">Free at <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a> — 1500 scans/day free</div>
+      <div class="api-st" id="apiSt"></div>
+    </div>
+
+    <div class="s-title">🔍 Scan Configuration</div>
+
+    <span class="s-label">Store URL</span>
+    <input type="url" id="urlInput" placeholder="https://yourstore.shop" oninput="onUrl()">
+
+    <span class="s-label">Situation</span>
+    <select id="rejType">
+      <option value="not_submitted">Pre-submission audit</option>
+      <option value="misrepresentation">GMC: Misrepresentation</option>
+      <option value="policy_violation">GMC: Policy Violation</option>
+      <option value="product_disapproval">Products disapproved</option>
+      <option value="account_suspended">Account suspended</option>
+      <option value="keep_getting_rejected">Rejected multiple times</option>
+    </select>
+
+    <span class="s-label">Target Market</span>
+    <select id="mktSel">
+      <option value="usa">🇺🇸 USA (Primary)</option>
+      <option value="europe">🇪🇺 Europe</option>
+      <option value="uk">🇬🇧 UK</option>
+      <option value="global">🌍 Global</option>
+    </select>
+
+    <span class="s-label">Product Type</span>
+    <select id="nicheSel">
+      <option value="leather_bags">Leather bags & wallets</option>
+      <option value="silver_jewelry">Berber silver jewelry</option>
+      <option value="rugs">Moroccan rugs</option>
+      <option value="argan">Argan & natural beauty</option>
+      <option value="ceramics">Ceramics & zellige</option>
+      <option value="brass">Brass & copper decor</option>
+      <option value="babouches">Babouches & sandals</option>
+      <option value="other">Other Moroccan artisan</option>
+    </select>
+
+    <span class="s-label" style="margin-top:14px">Known Issues</span>
+    <div class="pills">
+      <div class="pill" onclick="tp(this)" data-v="gmail"><span class="pill-dot"></span>Gmail/Yahoo email</div>
+      <div class="pill" onclick="tp(this)" data-v="no_duty"><span class="pill-dot"></span>No US duty disclosure</div>
+      <div class="pill" onclick="tp(this)" data-v="duty_free"><span class="pill-dot"></span>"Duty-free" language</div>
+      <div class="pill" onclick="tp(this)" data-v="fast_ship"><span class="pill-dot"></span>Claiming fast shipping</div>
+      <div class="pill" onclick="tp(this)" data-v="watermarks"><span class="pill-dot"></span>Watermarked images</div>
+      <div class="pill" onclick="tp(this)" data-v="copied"><span class="pill-dot"></span>Copied descriptions</div>
+      <div class="pill" onclick="tp(this)" data-v="no_schema"><span class="pill-dot"></span>No schema markup</div>
+      <div class="pill" onclick="tp(this)" data-v="new_domain"><span class="pill-dot"></span>New domain (&lt;6mo)</div>
+    </div>
+
+    <button class="scan-btn" id="scanBtn" onclick="runScan()" disabled>
+      <span id="scanTxt">⚡ Deep AI Scan</span>
+    </button>
+
+    <div class="prog-wrap" id="progWrap">
+      <div class="prog-lbl" id="progLbl">Initializing...</div>
+      <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+      <div class="prog-steps" id="progSteps"></div>
+    </div>
+
+  </aside>
+
+  <main class="main">
+
+    <div class="placeholder" id="phState">
+      <div class="ph-icon">🇲🇦</div>
+      <div class="ph-title">GMC PRO Diagnostic</div>
+      <p class="ph-sub">Enter your Gemini API Key (free) and store URL. The AI will crawl every page, run all 8 phases of the GMC Supreme Audit System v4.0, and give you an exact fix list.</p>
+      <div class="ph-feats">
+        <div class="ph-feat">🤖 Gemini AI — Free</div>
+        <div class="ph-feat">🔍 Real Crawling</div>
+        <div class="ph-feat">📸 Screenshots</div>
+        <div class="ph-feat">8 Audit Phases</div>
+        <div class="ph-feat">📥 Export Report</div>
+        <div class="ph-feat">♾️ Unlimited Scans</div>
+      </div>
+      <div style="margin-top:18px;font-size:0.63rem;color:var(--dim2);font-family:var(--mono)">✦ Powered by Imad Bergaouy · GMC Supreme Audit System v4.0</div>
+    </div>
+
+    <div class="err-box" id="errBox"></div>
+
+    <div class="results" id="resState">
+
+      <div class="verdict" id="verdictEl">
+        <div class="v-score" id="vScore">—</div>
+        <div>
+          <div class="v-label" id="vLabel">—</div>
+          <div class="v-msg" id="vMsg">—</div>
+        </div>
+        <div class="v-meta" id="vMeta"></div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="stat-n r" id="sCrit">0</div><div class="stat-l">Critical</div></div>
+        <div class="stat"><div class="stat-n a" id="sHigh">0</div><div class="stat-l">High</div></div>
+        <div class="stat"><div class="stat-n b" id="sMed">0</div><div class="stat-l">Medium</div></div>
+        <div class="stat"><div class="stat-n g" id="sPass">0</div><div class="stat-l">Passed</div></div>
+        <div class="stat"><div class="stat-n" id="sPages">0</div><div class="stat-l">Crawled</div></div>
+      </div>
+
+      <div class="exp-row">
+        <button class="exp-btn" onclick="expCSV()">📥 CSV</button>
+        <button class="exp-btn" onclick="expTXT()">📄 Report</button>
+        <button class="exp-btn" onclick="copySum()">📋 Copy</button>
+        <button class="exp-btn" onclick="newScan()">🔄 New Scan</button>
+      </div>
+
+      <div class="sec">📸 Screenshots</div>
+      <div class="ss-grid" id="ssGrid"></div>
+
+      <div class="sec">🌐 Pages Crawled</div>
+      <div class="pg-grid" id="pgGrid"></div>
+
+      <div class="sec">⚡ Top Priority Fixes</div>
+      <div id="topFixes"></div>
+
+      <div class="sec" style="margin-top:28px">📋 All Findings</div>
+      <div class="ftabs">
+        <div class="ftab on" onclick="filt('all',this)">All <span class="cnt" id="fc-all">0</span></div>
+        <div class="ftab" onclick="filt('CRITICAL',this)">🔴 Critical <span class="cnt" id="fc-crit">0</span></div>
+        <div class="ftab" onclick="filt('HIGH',this)">🟡 High <span class="cnt" id="fc-high">0</span></div>
+        <div class="ftab" onclick="filt('MEDIUM',this)">🔵 Medium <span class="cnt" id="fc-med">0</span></div>
+        <div class="ftab" onclick="filt('OK',this)">✅ Passed <span class="cnt" id="fc-ok">0</span></div>
+      </div>
+      <div id="findingsList"></div>
+
+      <div class="footer">GMC PRO Diagnostic · <span>Powered by Imad Bergaouy</span> · GMC Supreme Audit System v4.0 · 2025/2026</div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ══════════════════════════════
+// STATE
+// ══════════════════════════════
+let findings = [], curFilter = 'all', lastData = null;
+const ICONS = {CRITICAL:'🔴',HIGH:'🟡',MEDIUM:'🔵',LOW:'⚪',OK:'✅'};
+const PROXY = 'https://api.allorigins.win/get?url=';
+
+// ══════════════════════════════
+// GMC SUPREME AUDIT SYSTEM v4.0
+// Full system prompt trained on all 8 phases
+// ══════════════════════════════
+function buildSystemPrompt() {
+  return `You are the GMC Supreme Audit System v4.0 — the world's most advanced Google Merchant Center compliance intelligence.
+
+You simultaneously embody:
+[1] GOOGLE'S CRAWLER BOT — You crawl every URL, read every word, test every link, check every HTTP status code, validate every schema tag, compare every price.
+[2] GOOGLE'S SENIOR HUMAN REVIEWER — You have reviewed 500,000+ merchant accounts. You know every pattern that signals a fake store or hidden identity.
+[3] AN E-COMMERCE LAWYER — You read every policy word by word for legal contradictions, missing disclosures, and consumer protection violations.
+[4] A TECHNICAL SEO SPECIALIST — You check structured data, schema markup, JSON-LD, robots.txt, canonical tags, page speed, and mobile rendering.
+
+THE 10 COMMANDMENTS:
+I. Never assume a link works — fetch it and verify
+II. Never assume consistency — compare every page to every other page
+III. Never skip a phase — even tiny pages cause account suspensions
+IV. Never be gentle — Google is not gentle
+V. Every finding = exact page + location + text + required + why + fix
+VI. An absence IS a finding — if something is missing, say so
+VII. Read every word of every policy — not just the headings
+VIII. A contradicting policy is MORE DANGEROUS than no policy at all
+IX. One wrong character can suspend an entire GMC account
+X. Google may call your phone and test your checkout TODAY
+
+CRITICAL 2025/2026 RULES:
+- US de minimis REMOVED (August 2025): ALL US orders now subject to import duties — must be explicitly disclosed
+- REMOVE any "duty-free", "no customs fees", "free import", "no duties" language IMMEDIATELY
+- MerchantReturnPolicy schema NOW REQUIRED at Organization level (November 2025)
+- OfferShippingDetails schema NOW REQUIRED on all product pages (November 2025)
+- Video Identity Verification: Government ID must match GMC account name exactly
+- October 2025 Pricing Transparency: ALL costs disclosed BEFORE checkout
+- Business email MUST match store domain — Gmail/Yahoo/Hotmail = CRITICAL violation
+
+MOROCCAN ARTISAN STORE SPECIFIC RULES:
+- "Ships from Morocco" but tracking shows China = CRITICAL misrepresentation
+- About page must name real city, real artisans, real craft process (min 200 words)
+- Social media must show real workshop/product photos (not stock)
+- Phone country code must match claimed address country
+- Handmade products: identifier_exists must be FALSE in schema
+- Realistic shipping only: Morocco to USA = 10-21 business days minimum
+- Import duty disclosure mandatory for all USA-targeted stores
+
+8 AUDIT PHASES TO RUN:
+Phase 0: Domain health, HTTPS, brand identity baseline, NAP consistency
+Phase 1: Sitewide trust signals, footer forensics, content quality
+Phase 2: Policy pages deep audit (Shipping, Returns, Privacy, Terms, Payment, Cancellation, Exchange, Do Not Sell, Cookie, FAQ)
+Phase 3: Cross-page consistency matrix (every element on every page)
+Phase 4: Product pages and feed compliance
+Phase 5: Technical and schema markup audit
+Phase 6: 2025/2026 advanced GMC intelligence checks
+Phase 7: GMC account settings alignment
+Phase 8: Appeal readiness assessment
+
+SEVERITY LEVELS:
+- CRITICAL (-15pts): Will cause immediate rejection or suspension
+- HIGH (-7pts): Very likely to cause rejection
+- MEDIUM (-3pts): Should be fixed before submission
+- LOW (-1pt): Best practice improvement
+- OK (0pts): Compliant — passed check
+
+SCORE: Start at 100, deduct per finding. 0-29=DANGER, 30-59=LOW, 60-84=MEDIUM, 85-100=HIGH approval likelihood.
+
+YOUR DIRECTIVE: 90% of GMC suspensions = MISREPRESENTATION. Find EVERY signal — visible or hidden — before Google does. Be merciless. Be obsessive. Be exact. Generate minimum 20 findings.`;
+}
+
+// ══════════════════════════════
+// UI
+// ══════════════════════════════
+function onKey() {
+  const k = document.getElementById('apiKey').value.trim();
+  const st = document.getElementById('apiSt');
+  if (k.startsWith('AIza') && k.length > 20) {
+    st.className='api-st ok'; st.textContent='✓ Gemini key looks correct';
+  } else if (k.length > 3) {
+    st.className='api-st err'; st.textContent='✗ Should start with AIza...';
+  } else { st.className='api-st'; }
+  checkReady();
+}
+function onUrl() { checkReady(); }
+function checkReady() {
+  const k = document.getElementById('apiKey').value.trim();
+  const u = document.getElementById('urlInput').value.trim();
+  document.getElementById('scanBtn').disabled = k.length < 10 || u.length < 6;
+}
+function toggleEye() {
+  const i = document.getElementById('apiKey');
+  i.type = i.type==='password' ? 'text' : 'password';
+}
+function tp(el) { el.classList.toggle('on'); }
+function setProg(pct, lbl, steps=[]) {
+  document.getElementById('progFill').style.width = pct+'%';
+  document.getElementById('progLbl').textContent = lbl;
+  document.getElementById('progSteps').innerHTML = steps.map(s =>
+    `<div class="ps ${s.st}">${s.st==='done'?'✓':s.st==='active'?'▶':s.st==='err'?'✗':'○'} ${s.l}</div>`
+  ).join('');
+}
+function openModal(src) { document.getElementById('modalImg').src=src; document.getElementById('modal').classList.add('on'); }
+function closeModal() { document.getElementById('modal').classList.remove('on'); }
+function newScan() { document.getElementById('resState').classList.remove('on'); document.getElementById('phState').style.display='flex'; }
+
+// ══════════════════════════════
+// CRAWL
+// ══════════════════════════════
+async function fetchPage(url) {
+  try {
+    const r = await fetch(PROXY+encodeURIComponent(url), {signal: AbortSignal.timeout(14000)});
+    if (!r.ok) return {ok:false,html:'',url};
+    const d = await r.json();
+    return {ok:true, html:d.contents||'', url, status: d.status?.http_code||200};
+  } catch(e) { return {ok:false,html:'',url,error:e.message}; }
+}
+
+async function crawl(baseUrl, onStep) {
+  const base = new URL(baseUrl).origin;
+  const defs = [
+    {k:'homepage', p:['/']},
+    {k:'about', p:['/about','/about-us','/pages/about','/pages/about-us']},
+    {k:'contact', p:['/contact','/contact-us','/pages/contact','/pages/contact-us']},
+    {k:'shipping', p:['/shipping-policy','/shipping','/pages/shipping-policy','/pages/shipping']},
+    {k:'returns', p:['/refund-policy','/return-policy','/returns','/pages/refund-policy','/pages/returns']},
+    {k:'privacy', p:['/privacy-policy','/privacy','/pages/privacy-policy']},
+    {k:'terms', p:['/terms-of-service','/terms','/pages/terms-of-service']},
+    {k:'payment', p:['/payment-policy','/payment','/pages/payment-policy']},
+    {k:'cancellation', p:['/cancellation-policy','/cancellation','/pages/cancellation-policy']},
+    {k:'faq', p:['/faq','/faqs','/pages/faq']},
+    {k:'shop', p:['/collections/all','/collections','/shop','/products']},
+  ];
+  const res = {};
+  for (const d of defs) {
+    onStep(`Crawling ${d.k}...`);
+    for (const path of d.p) {
+      const r = await fetchPage(base+path);
+      if (r.ok && r.html.length > 300) { res[d.k]={...r,k:d.k}; break; }
+    }
+    if (!res[d.k]) res[d.k]={ok:false,html:'',url:base+d.p[0],k:d.k};
+  }
+  return res;
+}
+
+function txt(html, max=1500) {
+  const d = document.createElement('div');
+  d.innerHTML = html;
+  d.querySelectorAll('script,style,noscript').forEach(e=>e.remove());
+  return d.innerText.replace(/\s+/g,' ').trim().substring(0,max);
+}
+
+// ══════════════════════════════
+// GEMINI AI AUDIT
+// ══════════════════════════════
+async function runGemini(apiKey, siteData, ctx) {
+  const pages = Object.entries(siteData).map(([k,p]) => {
+    const content = p.ok ? txt(p.html, 1000) : '[PAGE NOT FOUND — 404]';
+    return `=== ${k.toUpperCase()} PAGE ===\nURL: ${p.url}\nStatus: ${p.ok?'FOUND (200)':'NOT FOUND (404)'}\nContent:\n${content}`;
+  }).join('\n\n---\n\n');
+
+  const issues = Array.from(document.querySelectorAll('.pill.on')).map(p=>p.dataset.v).join(', ')||'none';
+
+  const userPrompt = `Run the complete GMC Supreme Audit System v4.0 on this store.
+
+STORE DETAILS:
+- URL: ${ctx.url}
+- Rejection/Situation: ${ctx.rej}
+- Target Market: ${ctx.mkt}
+- Product Type: ${ctx.niche}
+- Known issues flagged by owner: ${issues}
+
+CRAWLED PAGES:
+${pages}
+
+INSTRUCTIONS:
+1. Run ALL 8 phases of the GMC Supreme Audit System
+2. Be MERCILESS — find every issue, no matter how small
+3. Pay special attention to: email domain, duty disclosure, policy completeness, schema, NAP consistency
+4. For Moroccan artisan stores: check shipping time claims, origin authenticity, About page quality
+5. Generate MINIMUM 20 findings including both issues and passed checks
+
+Return ONLY valid JSON (no markdown, no explanation, just the JSON):
+{
+  "score": <0-100>,
+  "verdict": {
+    "status": "<WILL_BE_REJECTED|HIGH_RISK|NEEDS_WORK|READY>",
+    "label": "<Will Be Rejected|High Risk|Needs Work|Ready to Submit>",
+    "color": "<red|orange|yellow|green>",
+    "message": "<detailed verdict message>"
+  },
+  "findings": [
+    {
+      "severity": "<CRITICAL|HIGH|MEDIUM|LOW|OK>",
+      "category": "<Misrepresentation|Policy|Email|NAP|Schema|Products|Technical|Footer|Shipping|Returns|Privacy|Terms|Payment|Trust|Import Duty>",
+      "title": "<concise finding title>",
+      "page": "<page name>",
+      "page_url": "<full URL or empty string>",
+      "location": "<exact location on page>",
+      "found": "<what was found, or null>",
+      "required": "<what is required, or null>",
+      "fix": "<exact step-by-step fix>"
+    }
+  ],
+  "crawl_summary": {
+    "homepage": <true/false>,
+    "about": <true/false>,
+    "contact": <true/false>,
+    "shipping": <true/false>,
+    "returns": <true/false>,
+    "privacy": <true/false>,
+    "terms": <true/false>,
+    "payment": <true/false>,
+    "cancellation": <true/false>,
+    "faq": <true/false>,
+    "shop": <true/false>
+  }
+}`;
+
+  const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      system_instruction: {parts:[{text: buildSystemPrompt()}]},
+      contents: [{parts:[{text: userPrompt}]}],
+      generationConfig: {temperature: 0.3, maxOutputTokens: 8192}
+    })
+  });
+
+  if (!resp.ok) {
+    const e = await resp.json();
+    throw new Error(e.error?.message || `Gemini API error ${resp.status}`);
+  }
+
+  const d = await resp.json();
+  const raw = d.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  const clean = raw.replace(/```json|```/g,'').trim();
+  return JSON.parse(clean);
+}
+
+// ══════════════════════════════
+// MAIN SCAN
+// ══════════════════════════════
+async function runScan() {
+  const url = document.getElementById('urlInput').value.trim();
+  const apiKey = document.getElementById('apiKey').value.trim();
+  const rej = document.getElementById('rejType').value;
+  const mkt = document.getElementById('mktSel').value;
+  const niche = document.getElementById('nicheSel').value;
+  if (!url || !apiKey) return;
+
+  document.getElementById('phState').style.display='none';
+  document.getElementById('errBox').classList.remove('on');
+  document.getElementById('resState').classList.remove('on');
+  document.getElementById('scanBtn').disabled=true;
+  document.getElementById('scanTxt').textContent='⏳ Scanning...';
+  document.getElementById('progWrap').classList.add('on');
+
+  const steps=[
+    {l:'Connecting to site',st:'active'},
+    {l:'Crawling all pages',st:''},
+    {l:'Capturing screenshots',st:''},
+    {l:'Running Gemini AI audit',st:''},
+    {l:'Building report',st:''},
+  ];
+
+  try {
+    setProg(8,'Connecting...', steps);
+    steps[0].st='done'; steps[1].st='active';
+    setProg(15,'Crawling pages...', steps);
+
+    const siteData = await crawl(url, msg => setProg(30, msg, steps));
+    const pagesCrawled = Object.values(siteData).filter(p=>p.ok).length;
+
+    steps[1].st='done'; steps[2].st='active';
+    setProg(50,'Getting screenshots...', steps);
+
+    const base = new URL(url).origin;
+    const ssPages = ['homepage','about','contact','shipping','returns','privacy','terms'];
+    const screenshots = ssPages.map(k => ({
+      k, url: k==='homepage' ? base : (siteData[k]?.url||base),
+      img: `https://image.thum.io/get/width/800/crop/500/noanimate/${encodeURIComponent(k==='homepage'?base:(siteData[k]?.url||base))}`
+    }));
+
+    steps[2].st='done'; steps[3].st='active';
+    setProg(60,'Running Gemini AI — analyzing all pages...', steps);
+
+    const audit = await runGemini(apiKey, siteData, {url,rej,mkt,niche});
+    audit.url = url;
+    audit.screenshots = screenshots;
+    audit.siteData = siteData;
+
+    const f = audit.findings || [];
+    audit.summary = {
+      critical: f.filter(x=>x.severity==='CRITICAL').length,
+      high: f.filter(x=>x.severity==='HIGH').length,
+      medium: f.filter(x=>x.severity==='MEDIUM').length,
+      low: f.filter(x=>x.severity==='LOW').length,
+      passed: f.filter(x=>x.severity==='OK').length,
+      score: audit.score||0,
+      pages_crawled: pagesCrawled
+    };
+    audit.top_fixes = f.filter(x=>['CRITICAL','HIGH'].includes(x.severity)).slice(0,5).map((x,i)=>({...x,priority:i+1}));
+
+    steps[3].st='done'; steps[4].st='active';
+    setProg(95,'Building report...', steps);
+    steps[4].st='done';
+    setProg(100,'Done!', steps);
+
+    setTimeout(()=>{
+      document.getElementById('progWrap').classList.remove('on');
+      render(audit);
+    }, 500);
+
+  } catch(e) {
+    document.getElementById('progWrap').classList.remove('on');
+    const eb = document.getElementById('errBox');
+    eb.innerHTML = `<strong>⚠ Scan failed:</strong> ${e.message}<br><small style="margin-top:6px;display:block">Check: 1) API key correct? 2) Gemini free quota not exceeded? 3) Store URL valid?</small>`;
+    eb.classList.add('on');
+    document.getElementById('phState').style.display='flex';
+  } finally {
+    document.getElementById('scanBtn').disabled=false;
+    document.getElementById('scanTxt').textContent='⚡ Deep AI Scan';
+  }
+}
+
+// ══════════════════════════════
+// RENDER
+// ══════════════════════════════
+function render(data) {
+  lastData=data; findings=data.findings||[];
+  const s=data.summary||{}, v=data.verdict||{};
+
+  const vEl = document.getElementById('verdictEl');
+  vEl.className=`verdict ${v.color||'red'}`;
+  document.getElementById('vScore').textContent=s.score||0;
+  document.getElementById('vLabel').textContent=v.label||'—';
+  document.getElementById('vMsg').textContent=v.message||'—';
+  document.getElementById('vMeta').innerHTML=`
+    <div class="v-mi"><span class="v-mn r">${s.critical||0}</span> Critical</div>
+    <div class="v-mi"><span class="v-mn a">${s.high||0}</span> High</div>
+    <div class="v-mi"><span class="v-mn b">${s.medium||0}</span> Medium</div>
+    <div class="v-mi"><span class="v-mn g">${s.passed||0}</span> Passed</div>`;
+
+  ['sCrit','sHigh','sMed','sPass','sPages'].forEach((id,i)=>{
+    document.getElementById(id).textContent=[s.critical,s.high,s.medium,s.passed,s.pages_crawled][i]||0;
+  });
+  document.getElementById('fc-all').textContent=findings.length;
+  document.getElementById('fc-crit').textContent=findings.filter(f=>f.severity==='CRITICAL').length;
+  document.getElementById('fc-high').textContent=findings.filter(f=>f.severity==='HIGH').length;
+  document.getElementById('fc-med').textContent=findings.filter(f=>f.severity==='MEDIUM').length;
+  document.getElementById('fc-ok').textContent=findings.filter(f=>f.severity==='OK').length;
+
+  renderSS(data.screenshots||[]);
+  renderPG(data.siteData||{});
+  renderTF(data.top_fixes||[]);
+  renderF(findings);
+
+  document.getElementById('resState').classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderSS(ss) {
+  document.getElementById('ssGrid').innerHTML = ss.length
+    ? ss.map(s=>`<div class="ss-card" onclick="openModal('${s.img}')"><div class="ss-img"><img src="${s.img}" loading="lazy" onerror="this.parentElement.innerHTML='<span>📄 ${s.k}</span>'"></div><div class="ss-lbl">${s.k}</div></div>`).join('')
+    : '<div style="color:var(--dim);font-size:0.78rem">Loading screenshots...</div>';
+}
+
+function renderPG(sd) {
+  document.getElementById('pgGrid').innerHTML = Object.entries(sd).map(([k,p])=>
+    `<div class="pg ${p.ok?'ok':'fail'}"><div class="pg-dot"></div><span class="pg-name">${k}</span><span class="pg-code">${p.ok?'200':'404'}</span></div>`
+  ).join('');
+}
+
+function renderTF(fixes) {
+  const el=document.getElementById('topFixes');
+  if (!fixes.length){el.innerHTML='<p style="color:var(--dim);font-size:0.78rem;padding:8px 0">No critical issues found 🎉</p>';return;}
+  el.innerHTML=fixes.map((f,i)=>`
+    <div class="tf ${f.severity}">
+      <div class="tf-num">${i+1}</div>
+      <div>
+        <div class="tf-title">${f.title}<span class="sev sev-${f.severity}">${f.severity}</span></div>
+        <div class="tf-fix">${f.fix}</div>
+        ${f.page?`<div style="font-size:0.63rem;color:var(--dim);margin-top:3px;font-family:var(--mono)">📄 ${f.page}</div>`:''}
+      </div>
+    </div>`).join('');
+}
+
+function renderF(f) {
+  const el=document.getElementById('findingsList');
+  const list = curFilter==='all' ? f : f.filter(x=>x.severity===curFilter);
+  if (!list.length){el.innerHTML='<div style="color:var(--dim);font-size:0.78rem;padding:14px 0">No findings here.</div>';return;}
+  el.innerHTML=list.map((f,i)=>`
+    <div class="finding ${f.severity}" id="fd-${i}">
+      <div class="fh" onclick="tog(${i})">
+        <span class="fh-ico">${ICONS[f.severity]||'○'}</span>
+        <div class="fh-b">
+          <div class="fh-t">${f.title}<span class="sev sev-${f.severity}">${f.severity}</span><span style="font-size:0.6rem;color:var(--dim);font-weight:400;font-family:var(--mono)">${f.category||''}</span></div>
+          ${f.page?`<div class="fh-m">📄 ${f.page}${f.location?' · '+f.location:''}</div>`:''}
+        </div>
+        <span class="fh-arr">▼</span>
+      </div>
+      ${f.severity!=='OK'?`<div class="fb">
+        ${f.page_url?`<div class="fb-r"><div class="fb-k">URL</div><div class="fb-v"><a href="${f.page_url}" target="_blank" style="color:var(--blue);font-family:var(--mono);font-size:0.66rem">${f.page_url}</a></div></div>`:''}
+        ${f.found?`<div class="fb-r"><div class="fb-k">Found</div><div class="fb-v found">${f.found}</div></div>`:''}
+        ${f.required?`<div class="fb-r"><div class="fb-k">Required</div><div class="fb-v">${f.required}</div></div>`:''}
+        <div class="fb-r"><div class="fb-k">Fix</div><div class="fb-v fix">${f.fix}</div></div>
+      </div>`:''}
+    </div>`).join('');
+}
+
+function tog(i){document.getElementById('fd-'+i)?.classList.toggle('open');}
+function filt(t,el){
+  curFilter=t;
+  document.querySelectorAll('.ftab').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');
+  renderF(findings);
+}
+
+// ══════════════════════════════
+// EXPORT
+// ══════════════════════════════
+function expCSV(){
+  if(!findings.length)return;
+  const rows=[['Severity','Category','Title','Page','Location','Found','Required','Fix']];
+  findings.filter(f=>f.severity!=='OK').forEach(f=>rows.push([
+    f.severity,f.category,f.title,f.page,f.location||'',
+    (f.found||'').replace(/,/g,' '),(f.required||'').replace(/,/g,' '),
+    (f.fix||'').replace(/,/g,' ').replace(/\n/g,' ')
+  ]));
+  dl(rows.map(r=>r.map(c=>`"${c||''}"`).join(',')).join('\n'),`gmc-audit-${Date.now()}.csv`,'text/csv');
+}
+
+function expTXT(){
+  if(!lastData)return;
+  const s=lastData.summary,v=lastData.verdict;
+  let t=`GMC DIAGNOSTIC REPORT — Powered by Imad Bergaouy\n${'='.repeat(60)}\n`;
+  t+=`URL: ${lastData.url}\nDate: ${new Date().toLocaleString()}\nScore: ${s.score}/100\nVerdict: ${v.label}\n`;
+  t+=`Critical: ${s.critical} | High: ${s.high} | Medium: ${s.medium} | Passed: ${s.passed}\n\n`;
+  t+=`TOP PRIORITY FIXES:\n${'─'.repeat(40)}\n`;
+  (lastData.top_fixes||[]).forEach((f,i)=>t+=`${i+1}. [${f.severity}] ${f.title}\n   ${f.fix}\n\n`);
+  t+=`\nALL FINDINGS:\n${'─'.repeat(40)}\n`;
+  findings.filter(f=>f.severity!=='OK').forEach(f=>{
+    t+=`\n[${f.severity}] ${f.title} — ${f.category}\nPage: ${f.page}\n`;
+    if(f.found)t+=`Found: ${f.found}\n`;
+    if(f.required)t+=`Required: ${f.required}\n`;
+    t+=`Fix: ${f.fix}\n`;
+  });
+  t+=`\n\n— Powered by Imad Bergaouy · GMC Supreme Audit System v4.0`;
+  dl(t,`gmc-report-${Date.now()}.txt`,'text/plain');
+}
+
+function copySum(){
+  if(!lastData)return;
+  const s=lastData.summary,v=lastData.verdict;
+  let t=`GMC Audit: ${lastData.url}\nScore: ${s.score}/100 — ${v.label}\nCritical: ${s.critical} | High: ${s.high} | Medium: ${s.medium}\n\nTop Fixes:\n`;
+  (lastData.top_fixes||[]).forEach((f,i)=>t+=`${i+1}. [${f.severity}] ${f.title}\n`);
+  t+=`\n— Powered by Imad Bergaouy`;
+  navigator.clipboard.writeText(t).then(()=>alert('✓ Copied!'));
+}
+
+function dl(c,n,t){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:t}));a.download=n;a.click();}
+</script>
+</body>
+</html>
